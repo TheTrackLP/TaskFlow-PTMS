@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { Link } from "@inertiajs/vue3";
+</script>
+
 <style>
 img {
     display: block;
@@ -107,15 +111,12 @@ img {
                 ><i class="fa-solid fa-clock-rotate-left"></i
                 ><span class="label">Activity Logs</span></a
             >
-            <a
-                href="#"
+            <Link
+                :href="route('users.list')"
                 class="nav-item-link"
-                data-view="placeholder"
-                data-title="Settings"
-                data-bs-title="Settings"
-                aria-label="Settings"
-                ><i class="fa-solid fa-gears"></i
-                ><span class="label">Settings</span></a
+                aria-label="Users"
+                ><i class="fa-solid fa-user-gear"></i
+                ><span class="label">Users</span></Link
             >
         </div>
     </nav>

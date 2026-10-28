@@ -1,7 +1,7 @@
 <script setup>
 import { Head, Link, useForm } from "@inertiajs/vue3";
 const form = useForm({
-    email: "",
+    login: "",
     password: "",
     remember: false,
 });
@@ -64,41 +64,34 @@ body {
                     </div>
 
                     <form @submit.prevent="submit" novalidate>
-                        <!-- Email -->
                         <div class="mb-3">
-                            <label for="email" class="form-label"
-                                >Email address</label
+                            <label for="login" class="form-label"
+                                >Email or Username</label
                             >
                             <div class="input-group">
                                 <span class="input-group-text bg-white"
                                     ><i class="fa-solid fa-user"></i
                                 ></span>
                                 <input
-                                    type="email"
+                                    type="text"
                                     class="form-control"
-                                    v-model="form.email"
-                                    :class="{ 'is-invalid': form.errors.email }"
-                                    placeholder="you@example.com"
-                                    autocomplete="email"
+                                    v-model="form.login"
+                                    :class="{ 'is-invalid': form.errors.login }"
+                                    placeholder="you or you@example.com"
                                     required
                                 />
                                 <div
                                     class="invalid-feedback"
-                                    v-if="form.errors.email"
+                                    v-if="form.errors.login"
                                 >
-                                    {{ form.errors.email }}
+                                    {{ form.errors.login }}
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Password -->
                         <div class="mb-3">
                             <div class="d-flex justify-content-between">
                                 <label for="password" class="form-label"
                                     >Password</label
-                                >
-                                <a href="#" class="small text-decoration-none"
-                                    >Forgot password?</a
                                 >
                             </div>
                             <div class="input-group">

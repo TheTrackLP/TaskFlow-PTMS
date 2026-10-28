@@ -1,6 +1,7 @@
 <script setup>
 import Navbar from "@/Components/Navbar.vue";
 import Sidebar from "@/Components/Sidebar.vue";
+import Notification from "@/Components/Notification.vue";
 import { ref } from "vue";
 
 const sidebarOpen = ref(false);
@@ -8,6 +9,7 @@ const collapsed = ref(false);
 </script>
 
 <template>
+    <Notification />
     <body>
         <aside class="sidebar" :class="{ show: sidebarOpen, collapsed }">
             <Sidebar @navigate="sidebarOpen = false" />
