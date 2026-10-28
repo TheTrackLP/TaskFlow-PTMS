@@ -13,9 +13,9 @@ img {
 <template>
     <div class="brand">
         <span class="brand-icon">
-            <img src="Logo/PTMS-logo.png" alt="" />
+            <img src="/logo/PTMS-logo.png" alt="" />
         </span>
-        <span class="brand-name fw-semibold fs-5">PTMS</span>
+        <span class="brand-name fw-semibold fs-5">TaskFlow</span>
     </div>
     <nav class="sidebar-nav">
         <div class="nav-group">
@@ -27,7 +27,7 @@ img {
                 data-title="Dashboard"
                 data-bs-title="Dashboard"
                 aria-label="Dashboard"
-                ><i class="bi bi-speedometer2"></i
+                ><i class="fa-solid fa-gauge"></i
                 ><span class="label">Dashboard</span></a
             >
             <a
@@ -38,7 +38,7 @@ img {
                 data-title="My Tasks"
                 data-bs-title="My Tasks"
                 aria-label="My Tasks"
-                ><i class="bi bi-person-check"></i
+                ><i class="fa-solid fa-user-check"></i
                 ><span class="label">My Tasks</span></a
             >
             <a
@@ -48,7 +48,7 @@ img {
                 data-title="All Tasks"
                 data-bs-title="All Tasks"
                 aria-label="All Tasks"
-                ><i class="bi bi-list-task"></i
+                ><i class="fa-solid fa-list-check"></i
                 ><span class="label">All Tasks</span></a
             >
             <a
@@ -58,7 +58,7 @@ img {
                 data-title="Calendar"
                 data-bs-title="Calendar"
                 aria-label="Calendar"
-                ><i class="bi bi-calendar3"></i
+                ><i class="fa-solid fa-calendar"></i
                 ><span class="label">Calendar</span></a
             >
         </div>
@@ -71,7 +71,7 @@ img {
                 data-title="Projects"
                 data-bs-title="Projects"
                 aria-label="Projects"
-                ><i class="bi bi-folder2"></i
+                ><i class="fa-solid fa-folder-tree"></i
                 ><span class="label">Projects</span></a
             >
             <a
@@ -81,7 +81,7 @@ img {
                 data-title="Team Members"
                 data-bs-title="Team Members"
                 aria-label="Team Members"
-                ><i class="bi bi-people"></i
+                ><i class="fa-solid fa-people-group"></i
                 ><span class="label">Team Members</span></a
             >
         </div>
@@ -94,7 +94,7 @@ img {
                 data-title="Reports"
                 data-bs-title="Reports"
                 aria-label="Reports"
-                ><i class="bi bi-bar-chart-line"></i
+                ><i class="fa-solid fa-chart-simple"></i
                 ><span class="label">Reports</span></a
             >
             <a
@@ -104,7 +104,7 @@ img {
                 data-title="Activity Logs"
                 data-bs-title="Activity Logs"
                 aria-label="Activity Logs"
-                ><i class="bi bi-clock-history"></i
+                ><i class="fa-solid fa-clock-rotate-left"></i
                 ><span class="label">Activity Logs</span></a
             >
             <a
@@ -114,7 +114,7 @@ img {
                 data-title="Settings"
                 data-bs-title="Settings"
                 aria-label="Settings"
-                ><i class="bi bi-gear"></i
+                ><i class="fa-solid fa-gears"></i
                 ><span class="label">Settings</span></a
             >
         </div>

@@ -37,7 +37,6 @@ body {
     width: 34px;
     height: 34px;
     border-radius: 0.5rem;
-    background: #0d6efd;
     color: #f8fafc;
     display: inline-flex;
     align-items: center;
@@ -108,23 +107,26 @@ body {
 
 /* Desktop collapsed state */
 @media (min-width: 992px) {
-    body.collapsed {
-        --sw: 72px;
+    .sidebar.collapsed {
+        width: 72px;
     }
-    body.collapsed .label,
-    body.collapsed .nav-heading,
-    body.collapsed .brand-name {
+    .sidebar.collapsed ~ .main {
+        margin-left: 72px;
+    }
+    .sidebar.collapsed .label,
+    .sidebar.collapsed .nav-heading,
+    .sidebar.collapsed .brand-name {
         display: none;
     }
-    body.collapsed .brand {
+    .sidebar.collapsed .brand {
         justify-content: center;
         padding: 0;
     }
-    body.collapsed .nav-item-link {
+    .sidebar.collapsed .nav-item-link {
         justify-content: center;
         padding: 0.65rem 0;
     }
-    body.collapsed .nav-group + .nav-group {
+    .sidebar.collapsed .nav-group + .nav-group {
         border-top: 1px solid #eef0f3;
         margin-top: 0.5rem;
         padding-top: 0.5rem;
@@ -136,17 +138,14 @@ body {
         width: 270px;
         transform: translateX(-100%);
     }
+    .sidebar.show {
+        transform: none;
+    }
     .main {
         margin-left: 0;
     }
-    body.drawer-open .sidebar {
-        transform: none;
-    }
-    body.drawer-open .backdrop {
+    .backdrop.show {
         display: block;
-    }
-    body.drawer-open {
-        overflow: hidden;
     }
 }
 

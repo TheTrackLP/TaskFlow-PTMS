@@ -10,16 +10,16 @@ const collapsed = ref(false);
 <template>
     <body>
         <aside class="sidebar" :class="{ show: sidebarOpen, collapsed }">
-            <Sidebar :collapsed="collapsed" />
+            <Sidebar @navigate="sidebarOpen = false" />
         </aside>
-        <div v-if="sidebarOpen" @click="sidebarOpen = false"></div>
-
+        <div
+            class="backdrop"
+            :class="{ show: sidebarOpen }"
+            @click="sidebarOpen = false"
+        ></div>
         <!-- ============ MAIN ============ -->
         <div class="main">
-            <Navbar
-                :collapsed="collapsed"
-                @toggle-sidebar="collapsed = !collapsed"
-            />
+            <Navbar @toggle-sidebar="collapsed = !collapsed" />
             <main class="p-3 p-lg-4">
                 <slot />
             </main>

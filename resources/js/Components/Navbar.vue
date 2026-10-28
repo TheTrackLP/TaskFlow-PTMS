@@ -13,31 +13,8 @@ const emit = defineEmits(["toggleSidebar"]);
         >
             <i class="fa-solid fa-bars"></i>
         </button>
-        <h1 class="h5 mb-0 text-truncate" id="pageTitle">Dashboard</h1>
         <div class="ms-auto d-flex align-items-center gap-2 gap-md-3">
-            <div class="input-group d-none d-md-flex" style="width: 260px">
-                <span class="input-group-text bg-light border-end-0"
-                    ><i class="bi bi-search"></i
-                ></span>
-                <input
-                    type="search"
-                    id="globalSearch"
-                    class="form-control bg-light border-start-0"
-                    placeholder="Search tasks..."
-                />
-            </div>
             <div class="dropdown">
-                <button
-                    class="btn btn-light border position-relative"
-                    data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside"
-                    aria-label="Notifications"
-                >
-                    <i class="bi bi-bell"></i
-                    ><span class="badge rounded-pill bg-danger notif-badge"
-                        >3</span
-                    >
-                </button>
                 <div
                     class="dropdown-menu dropdown-menu-end dropdown-menu-notif p-0 shadow-sm"
                 >
