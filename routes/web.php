@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,11 @@ Route::middleware('auth')->group(function() {
         Route::get('ptms/admin/users', 'UsersListDashboard')->name('users.list');
         Route::post('ptms/admin/users/store', 'UsersStoreData')->name('users.store');
         Route::post('ptms/admin/users/{id}/change-status', 'userChangeStatus')->name('users.status');
+    });
+
+    Route::controller(ProjectsController::class)->group(function(){
+        Route::get('/ptms/admin/projects', 'ProjectsDashboard')->name('project.dash');
+        Route::post('/ptms/admin/projects/store', 'ProjectsStore')->name('project.store');
     });
 });
 

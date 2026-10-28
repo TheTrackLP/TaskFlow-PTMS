@@ -68,15 +68,12 @@ img {
         </div>
         <div class="nav-group">
             <div class="nav-heading">Workspace</div>
-            <a
-                href="#"
+            <Link
+                :href="route('project.dash')"
                 class="nav-item-link"
-                data-view="placeholder"
-                data-title="Projects"
-                data-bs-title="Projects"
                 aria-label="Projects"
                 ><i class="fa-solid fa-folder-tree"></i
-                ><span class="label">Projects</span></a
+                ><span class="label">Projects</span></Link
             >
             <a
                 href="#"
