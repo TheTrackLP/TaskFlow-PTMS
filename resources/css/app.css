@@ -206,3 +206,6 @@ body {
         transition: none;
     }
 }
+.v-select.is-invalid .vs__dropdown-toggle {
+    border-color: #dc3545;
+}

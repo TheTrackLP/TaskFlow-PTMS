@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
-
-    private function StatusMessage(bool $status, string $message){
-        return redirect()->route('users.list')->with($status ? 'success' : 'error', $message);
-    }
-
     public function UsersListDashboard(){
         return inertia('Backend/Users', [
             'users'=>User::all(),

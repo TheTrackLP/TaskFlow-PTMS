@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('project_name');
             $table->longText('project_desc');
-            $table->enum('status', ['planning', 'hold', 'active', 'completed', 'archived'])->default(0);
-            $table->date('start_date');
-            $table->date('due_date');
+            $table->enum('status', ['planning', 'hold', 'active', 'completed', 'archived'])->default('planning');
+            $table->date('start_date')->nullable();
+            $table->date('due_date')->nullable();
             $table->integer('created_by');
             $table->timestamps();
         });

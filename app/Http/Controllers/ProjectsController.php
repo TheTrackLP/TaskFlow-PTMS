@@ -9,16 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class ProjectsController extends Controller
 {
-    // private function StatusMessage(bool $status, string $message){
-    //     return redirect()->route('project.dash')->with($status ? 'success' : 'error', $message);
-    // }
-
-    private function returnErrorMessage(array $trying){
-        return back()->withErrors($trying);
-    }
-
     public function ProjectsDashboard(){
-        return inertia('Backend/Projects');
+        return inertia('Backend/Projects', [
+            'projects' => Projects::all(),
+        ]);
     }
 
     public function ProjectsStore(Request $request){
@@ -26,23 +20,50 @@ class ProjectsController extends Controller
             'project_name' => "required",
             'project_desc' => "required",
             'status' => "required",
-            'start_date' => "required",
-            'due_date' => "required",
+        ],
+        [
+            'project_name' => "Project name is required",
+            'project_desc' => "Project name is required",
+            'status' => "Status is required",
+        ]
+        );
+
+        if($check->fails()){
+            return $this->failedValidation($check);
+        }
+
+        Projects::create([
+            'project_name' => $request->project_name,
+            'project_desc' => $request->project_desc,
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'due_date' => $request->due_date,
+            'created_by' => Auth::user()->id,
+        ]);
+
+        return $this->StatusMessage(true, 'Success, Project Added!');
+    }
+
+
+    public function ProjectsUpdate(Request $request){
+        $check = Validator::make($request->all(), [
+            'project_name' => "required",
+            'project_desc' => "required",
+            'status' => "required",
         ]);
 
         if($check->fails()){
-            return $this->returnErrorMessage($check);
+            return $this->failedValidation($check);
         }
 
-        // Projects::create([
-        //     'project_name' => $request->project_name,
-        //     'project_desc' => $request->project_desc,
-        //     'status' => $request->status,
-        //     'start_date' => $request->start_date,
-        //     'due_date' => $request->due_date,
-        //     'created_by' => Auth::user()->id,
-        // ]);
+        Projects::findorfail($request->id)->update([
+            'project_name' => $request->project_name,
+            'project_desc' => $request->project_desc,
+            'status' => $request->status,
+            'start_date' => $request->start_date,
+            'due_date' => $request->due_date,
+        ]);
 
-        // return $this->StatusMessage(true, 'Success, Project Added!');
+        return $this->StatusMessage(true, "Success, Project Updated!");
     }
 }

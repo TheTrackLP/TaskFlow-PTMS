@@ -45,15 +45,12 @@ img {
                 ><i class="fa-solid fa-user-check"></i
                 ><span class="label">My Tasks</span></a
             >
-            <a
-                href="#"
+            <Link
+                :href="route('tasks.dash')"
                 class="nav-item-link"
-                data-view="tasks"
-                data-title="All Tasks"
-                data-bs-title="All Tasks"
                 aria-label="All Tasks"
                 ><i class="fa-solid fa-list-check"></i
-                ><span class="label">All Tasks</span></a
+                ><span class="label">All Tasks</span></Link
             >
             <a
                 href="#"

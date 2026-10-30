@@ -1,46 +1,85 @@
 <script setup>
-import { useForm } from "@inertiajs/vue3";
-import { Modal } from "bootstrap";
-import { nextTick, ref } from "vue";
+import { Head, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
+import {
+    openFormModal,
+    closeModal,
+    dropdownToggle,
+    formattedDate,
+} from "@/resuables";
 
-const modalProjectRef = ref(null);
-let modalInstanceFormProject = null;
-
-const projectFormModal = () => {
-    nextTick(() => {
-        modalInstanceFormProject = new Modal(modalProjectRef.value);
-        modalInstanceFormProject.show();
-    });
+const projectModalFormRef = ref(null);
+const projectModalViewRef = ref(null);
+const openModalProjectForm = () => {
+    openFormModal(projectModalFormRef);
 };
 
-const openModalProjectForm = () => {
-    projectFormModal();
+const getProjectName = ref(null);
+const getProjectDesc = ref(null);
+const getProjectStatus = ref(null);
+const getStartDate = ref(null);
+const getDuteDate = ref(null);
+const openModalProjectView = (project) => {
+    openFormModal(projectModalViewRef);
+    getProjectName.value = project.project_name;
+    getProjectDesc.value = project.project_desc;
+    getProjectStatus.value = project.status;
+    getStartDate.value = project.start_date;
+    getDuteDate.value = project.due_date;
 };
 
 const closeFormModal = () => {
-    modalInstanceFormProject?.hide();
+    closeModal(projectModalFormRef);
+};
+
+const toggleDrop = (target) => {
+    dropdownToggle(target);
 };
 
 const projectForm = useForm({
     project_name: "",
     project_desc: "",
     status: "",
-    priority: "",
     start_date: "",
     due_date: "",
     created_by: "",
 });
 
-const submitProjectForm = () => {
-    projectForm.post(route("project.store"), {
-        onSuccess: () => {
-            closeFormModal();
-        },
-        onError: () => {
-            alert("Error");
-        },
-    });
+const projectFormMode = ref("create");
+
+const fetchProjectDetails = (project) => {
+    openFormModal(projectModalFormRef);
+    projectFormMode.value = "edit";
+    projectForm.id = project.id;
+    projectForm.project_name = project.project_name;
+    projectForm.project_desc = project.project_desc;
+    projectForm.status = project.status;
+    projectForm.start_date = project.start_date;
+    projectForm.due_date = project.due_date;
+    projectForm.created_by = project.created_by;
 };
+
+const submitProjectForm = () => {
+    if (projectFormMode.value === "create") {
+        projectFormMode.value = "create";
+        projectForm.post(route("project.store"), {
+            onSuccess: () => {
+                closeFormModal();
+            },
+        });
+    } else {
+        projectFormMode.value = "edit";
+        projectForm.post(route("project.update", projectForm.id), {
+            onSuccess: () => {
+                closeFormModal();
+            },
+        });
+    }
+};
+
+const props = defineProps({
+    projects: Array,
+});
 </script>
 
 <script>
@@ -51,6 +90,7 @@ export default {
 };
 </script>
 <template>
+    <Head title="Projects" />
     <div
         class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4"
     >
@@ -184,30 +224,120 @@ export default {
         </div>
     </div>
 
-    <div class="row g-3" id="gridView"></div>
+    <!-- <div class="row g-3"></div> -->
 
-    <div class="card d-none" id="listView">
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Project</th>
-                        <th>Status</th>
-                        <th style="min-width: 160px">Progress</th>
-                        <th>Tasks</th>
-                        <th>Team</th>
-                        <th>Due date</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="listBody"></tbody>
-            </table>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr class="text-center">
+                    <th>#</th>
+                    <th>Project</th>
+                    <th>Status</th>
+                    <th style="min-width: 160px">Progress</th>
+                    <th>Tasks</th>
+                    <th>Due date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    class="text-center"
+                    v-for="(project, index) in projects"
+                    :key="index"
+                >
+                    <td>{{ index + 1 }}</td>
+                    <td class="text-start">{{ project.project_name }}</td>
+                    <td>
+                        <span
+                            class="badge bg-info-subtle text-info-emphasis"
+                            v-if="project.status === 'planning'"
+                            >Planning</span
+                        >
+                        <span
+                            class="badge bg-primary-subtle text-primary-emphasis"
+                            v-else-if="project.status === 'active'"
+                            >Active</span
+                        >
+                        <span
+                            class="badge bg-warning-subtle text-warning-emphasis"
+                            v-else-if="project.status === 'hold'"
+                            >On Hold</span
+                        >
+                        <span
+                            class="badge bg-success-subtle text-success-emphasis"
+                            v-else-if="project.status === 'completed'"
+                            >Completed</span
+                        >
+                        <span
+                            class="badge bg-secondary-subtle text-secondary-emphasis"
+                            v-else-if="project.status === 'archived'"
+                            >Archived</span
+                        >
+                    </td>
+                    <td style="min-width: 160px">Progress</td>
+                    <td>Tasks</td>
+                    <td>
+                        <span v-if="project.start_date && project.due_date"
+                            >{{ formattedDate(project.start_date) }} ->
+                            {{ formattedDate(project.due_date) }}</span
+                        >
+                        <span v-else>No Date as of yet</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="dropdown">
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-light dropdown-toggle"
+                                aria-expanded="false"
+                                aria-label="Project actions"
+                                data-bs-toggle="dropdown"
+                                data-bs-popper-config='{"strategy":"fixed"}'
+                                @click="toggleDrop"
+                            >
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                        @click.prevent="
+                                            openModalProjectView(project)
+                                        "
+                                    >
+                                        <i class="bi bi-eye me-2"></i>View
+                                        project
+                                    </a>
+                                </li>
+                                <li>
+                                    <button
+                                        class="dropdown-item"
+                                        @click="fetchProjectDetails(project)"
+                                    >
+                                        <i class="bi bi-pencil me-2"></i>Edit
+                                    </button>
+                                </li>
+                                <li><hr class="dropdown-divider" /></li>
+                                <li>
+                                    <button
+                                        class="dropdown-item text-danger"
+                                        @click="archiveProject(p)"
+                                    >
+                                        <i class="bi bi-trash me-2"></i>Archive
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
+    <!-- Create and Update Form -->
     <div
         class="modal fade"
-        ref="modalProjectRef"
+        ref="projectModalFormRef"
         tabindex="-1"
         aria-hidden="true"
         data-bs-backdrop="static"
@@ -222,7 +352,7 @@ export default {
                     <button
                         type="button"
                         class="btn-close"
-                        data-bs-dismiss="modal"
+                        @click="closeFormModal"
                         aria-label="Close"
                     ></button>
                 </div>
@@ -230,6 +360,7 @@ export default {
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-12">
+                                <input type="hidden" v-model="projectForm.id" />
                                 <label for="projName" class="form-label"
                                     >Project name
                                     <span class="text-danger">*</span></label
@@ -253,10 +384,17 @@ export default {
                                 >
                                 <textarea
                                     class="form-control"
+                                    :class="{
+                                        'is-invalid':
+                                            projectForm.errors.project_desc,
+                                    }"
                                     rows="3"
                                     placeholder="What is this project about?"
                                     v-model="projectForm.project_desc"
                                 ></textarea>
+                                <div class="invalid-feedback">
+                                    {{ projectForm.errors.project_desc }}
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="projStatus" class="form-label"
@@ -265,12 +403,18 @@ export default {
                                 <select
                                     class="form-select"
                                     v-model="projectForm.status"
+                                    :class="{
+                                        'is-invalid': projectForm.errors.status,
+                                    }"
                                 >
-                                    <option class="planning">Planning</option>
-                                    <option class="active">Active</option>
-                                    <option class="hold">On hold</option>
-                                    <option class="completed">Completed</option>
+                                    <option value="planning">Planning</option>
+                                    <option value="active">Active</option>
+                                    <option value="hold">On hold</option>
+                                    <option value="completed">Completed</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    {{ projectForm.errors.status }}
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="projStart" class="form-label"
@@ -298,7 +442,7 @@ export default {
                         <button
                             type="button"
                             class="btn btn-outline-secondary"
-                            data-bs-dismiss="modal"
+                            @click="closeFormModal"
                         >
                             Cancel
                         </button>
@@ -307,6 +451,164 @@ export default {
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Modal -->
+    <div
+        class="modal fade"
+        ref="projectModalViewRef"
+        tabindex="-1"
+        aria-labelledby="viewName"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+    >
+        <div
+            class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+        >
+            <div class="modal-content">
+                <div class="modal-header align-items-start">
+                    <div>
+                        <span
+                            class="badge bg-info-subtle text-info-emphasis"
+                            v-if="getProjectStatus === 'planning'"
+                            >Planning</span
+                        >
+                        <span
+                            class="badge bg-primary-subtle text-primary-emphasis"
+                            v-else-if="getProjectStatus === 'active'"
+                            >Active</span
+                        >
+                        <span
+                            class="badge bg-warning-subtle text-warning-emphasis"
+                            v-else-if="getProjectStatus === 'hold'"
+                            >On Hold</span
+                        >
+                        <span
+                            class="badge bg-success-subtle text-success-emphasis"
+                            v-else-if="getProjectStatus === 'completed'"
+                            >Completed</span
+                        >
+                        <span
+                            class="badge bg-secondary-subtle text-secondary-emphasis"
+                            v-else-if="getProjectStatus === 'archived'"
+                            >Archived</span
+                        >
+                        <h2 class="modal-title">{{ getProjectName }}</h2>
+                    </div>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                    ></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-secondary">{{ getProjectDesc }}</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-secondary small">Progress</div>
+                                <div class="h5 mb-0" id="viewProgress"></div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-secondary small">
+                                    Tasks done
+                                </div>
+                                <div class="h5 mb-0" id="viewTasks"></div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-secondary small">
+                                    Start date
+                                </div>
+                                <div class="fw-semibold">
+                                    <span v-if="getStartDate">
+                                        {{ formattedDate(getStartDate) }}
+                                    </span>
+                                    <span v-else>No Date</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="text-secondary small">Due date</div>
+                                <div class="fw-semibold">
+                                    <span v-if="getDuteDate">
+                                        {{ formattedDate(getDuteDate) }}
+                                    </span>
+                                    <span v-else>No Date</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="h6 fw-semibold">Task breakdown</h3>
+                    <div
+                        class="progress mb-2"
+                        style="height: 10px"
+                        id="viewBreakdown"
+                    ></div>
+                    <div
+                        class="d-flex flex-wrap gap-3 small text-secondary mb-4"
+                    >
+                        <span
+                            ><i
+                                class="bi bi-circle-fill text-secondary-emphasis me-1"
+                                style="font-size: 0.5rem"
+                            ></i
+                            >To do: <strong id="viewTodo"></strong
+                        ></span>
+                        <span
+                            ><i
+                                class="bi bi-circle-fill text-primary me-1"
+                                style="font-size: 0.5rem"
+                            ></i
+                            >In progress: <strong id="viewDoing"></strong
+                        ></span>
+                        <span
+                            ><i
+                                class="bi bi-circle-fill text-success me-1"
+                                style="font-size: 0.5rem"
+                            ></i
+                            >Done: <strong id="viewDone"></strong
+                        ></span>
+                    </div>
+
+                    <div
+                        class="d-flex justify-content-between align-items-center mb-2"
+                    >
+                        <h3 class="h6 fw-semibold mb-0">Recent tasks</h3>
+                        <a href="#" class="small text-decoration-none"
+                            >View all tasks</a
+                        >
+                    </div>
+                    <ul
+                        class="list-group list-group-flush"
+                        id="viewTaskList"
+                    ></ul>
+                </div>
+                <div class="modal-footer">
+                    <button
+                        type="button"
+                        class="btn btn-outline-secondary"
+                        data-bs-dismiss="modal"
+                    >
+                        Close
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-outline-primary"
+                        id="viewEditBtn"
+                    >
+                        <i class="bi bi-pencil me-1"></i>Edit project
+                    </button>
+                </div>
             </div>
         </div>
     </div>
